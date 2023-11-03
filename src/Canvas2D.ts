@@ -1,27 +1,28 @@
 import Konva from "konva";
 import { Stage } from "konva/lib/Stage";
-import { Layout, ShapeProperty } from "./model/Shape";
+import { Layout } from "./model/Shape";
 import { Layer } from "konva/lib/Layer";
 import { Vector2d } from "konva/lib/types";
+import { ICanvas } from "./ICanvas";
 
 export const RENDER_SCALE = 0.1;
 
-export class DrawingBoard {
+export class Canvas2D implements ICanvas {
   stage: Stage;
   layer: Layer;
 
-  constructor() {
-    this.initStage();
+  constructor(canvasId: string) {
+    this.initStage(canvasId);
     this.initMouse();
     // this.drawSampleRect();
   }
 
-  initStage() {
+  initStage(canvasId: string) {
     var width = window.innerWidth;
     var height = window.innerHeight;
 
     this.stage = new Konva.Stage({
-      container: "canvas",
+      container: canvasId,
       width: width,
       height: height,
       draggable: true,
@@ -96,9 +97,9 @@ export class DrawingBoard {
     this.stage.position({ x: -topLeft.x * minScale, y: -topLeft.y * minScale });
   }
 
-  render(layout: Layout) {
+  renderLayout(layout: Layout) {
     layout.shapes.forEach((shape) => {
-      shape.render(this.layer);
+      shape.render2D(this.layer);
     });
     this.zoomFit();
     this.updateNumberOfObjects();
@@ -136,5 +137,10 @@ export class DrawingBoard {
     this.layer = new Layer();
     this.stage.add(this.layer);
     this.updateNumberOfObjects();
+  }
+
+  destroy() {
+    this.clear();
+    this.stage.destroy();
   }
 }

@@ -19,7 +19,9 @@
     "webpack-dev-server": "^4.13.1"
   },
   "dependencies": {
+    "@types/three": "^0.158.1",
     "html-webpack-plugin": "^5.5.0",
-    "konva": "^9.2.0"
+    "konva": "^9.2.0",
+    "three": "^0.158.0"
   }
 }

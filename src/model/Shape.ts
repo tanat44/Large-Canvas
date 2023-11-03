@@ -1,6 +1,7 @@
 import Konva from "konva";
 import { Layer } from "konva/lib/Layer";
-import { RENDER_SCALE } from "../DrawingBoard";
+import { RENDER_SCALE } from "../Canvas2D";
+import { RENDER_SCALE_3D, Renderer3D } from "../../Canvas3D/Render3D";
 
 export type ShapeProperty = {
   x: number;
@@ -27,7 +28,7 @@ export class Shape {
 
   constructor() {}
 
-  render(layer: Layer) {
+  render2D(layer: Layer) {
     // bounding box
     const shapeProperty: ShapeProperty = {
       x: this.properties.x * RENDER_SCALE,
@@ -102,6 +103,73 @@ export class Shape {
         stroke: "white",
       });
       layer.add(dot2);
+    }
+  }
+
+  render3D() {
+    // bounding box
+    const shapeProperty: ShapeProperty = {
+      x: this.properties.x * RENDER_SCALE_3D,
+      y: this.properties.y * RENDER_SCALE_3D,
+      width: this.properties.width * RENDER_SCALE_3D,
+      height: this.properties.height * RENDER_SCALE_3D,
+    };
+    Renderer3D.drawRect(
+      { x: shapeProperty.x, y: shapeProperty.y },
+      shapeProperty.width,
+      shapeProperty.height,
+      0,
+      "black"
+    );
+
+    // small boxes
+    const direction =
+      shapeProperty.width > shapeProperty.height
+        ? Direction.Horizontal
+        : Direction.Vertical;
+    const majorLength =
+      direction == Direction.Horizontal
+        ? shapeProperty.width
+        : shapeProperty.height;
+
+    const SMALL_BOX_SIZE = 100;
+    const PADDING = 20;
+    let count = majorLength / SMALL_BOX_SIZE;
+    count = Math.floor(count);
+    let actualSize = (majorLength - PADDING * (count + 1)) / count;
+
+    for (let i = 0; i < count; ++i) {
+      const x =
+        direction == Direction.Horizontal
+          ? shapeProperty.x + (i + 1) * PADDING + i * actualSize
+          : shapeProperty.x + PADDING;
+      const y =
+        direction == Direction.Vertical
+          ? shapeProperty.y + (i + 1) * PADDING + i * actualSize
+          : shapeProperty.y + PADDING;
+      const width =
+        direction == Direction.Horizontal
+          ? actualSize
+          : shapeProperty.width - PADDING * 2;
+      const height =
+        direction == Direction.Vertical
+          ? actualSize
+          : shapeProperty.height - PADDING * 2;
+      Renderer3D.drawRect({ x: x, y: y }, width, height, 0, "#8877ed");
+
+      // dot
+      Renderer3D.drawCircle(
+        { x: x + width / 2, y: y + height / 2 },
+        40,
+        "#ff5c87"
+      );
+
+      // dot2
+      Renderer3D.drawCircle(
+        { x: x + width / 2, y: y + height / 2 },
+        30,
+        "white"
+      );
     }
   }
 }

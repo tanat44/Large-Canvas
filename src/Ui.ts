@@ -1,13 +1,22 @@
-import { DrawingBoard } from "./DrawingBoard";
+import { Canvas3D } from "../Canvas3D/Canvas3D";
+import { Canvas2D } from "./Canvas2D";
+import { CANVAS_ID, ICanvas } from "./ICanvas";
 import { Layout } from "./model/Shape";
 
-export class Ui {
-  drawingBoard: DrawingBoard;
+enum CanvasMode {
+  Konva = 0,
+  Three = 1,
+}
 
-  constructor(drawingBoard: DrawingBoard) {
-    this.drawingBoard = drawingBoard;
+export class Ui {
+  canvas: ICanvas;
+  mode: CanvasMode;
+
+  constructor() {
     this.initUpload();
     this.initControl();
+    this.mode = CanvasMode.Konva;
+    this.initCanvas();
   }
 
   initUpload() {
@@ -25,12 +34,44 @@ export class Ui {
 
   initControl() {
     document.getElementById("zoomFitButton").addEventListener("click", () => {
-      this.drawingBoard.zoomFit();
+      this.canvas.zoomFit();
     });
 
     document.getElementById("clearButton").addEventListener("click", () => {
-      this.drawingBoard.clear();
+      this.canvas.clear();
     });
+
+    document.getElementById("toggleCanvas").addEventListener("click", () => {
+      this.toggleCanvas();
+    });
+  }
+
+  toggleCanvas() {
+    this.canvas.destroy();
+    // remove all child
+    const canvasContainer = document.getElementById(CANVAS_ID);
+    while (canvasContainer.firstChild) {
+      canvasContainer.removeChild(canvasContainer.firstChild);
+    }
+    if (this.mode === CanvasMode.Konva) {
+      this.mode = CanvasMode.Three;
+    } else if (this.mode === CanvasMode.Three) {
+      this.mode = CanvasMode.Konva;
+    }
+    this.initCanvas();
+  }
+
+  initCanvas() {
+    console.log(`Initializing Canvas: ${CanvasMode[this.mode]}`);
+    if (this.mode === CanvasMode.Konva) {
+      this.canvas = new Canvas2D(CANVAS_ID);
+      document.getElementById("toggleCanvas").innerText =
+        "Switch to Three Canvas";
+    } else if (this.mode === CanvasMode.Three) {
+      this.canvas = new Canvas3D(CANVAS_ID);
+      document.getElementById("toggleCanvas").innerText =
+        "Switch to Konva Canvas";
+    }
   }
 
   readFile(file: any) {
@@ -39,7 +80,7 @@ export class Ui {
       const result = event.target.result;
       const data = JSON.parse(result as string);
       const layout = new Layout(data.additionalData);
-      this.drawingBoard.render(layout);
+      this.canvas.renderLayout(layout);
 
       // clear input
       (document.getElementById("uploadFileInput") as HTMLInputElement).value =
