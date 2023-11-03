@@ -160,14 +160,14 @@ export class Shape {
       // dot
       Renderer3D.drawCircle(
         { x: x + width / 2, y: y + height / 2 },
-        40,
+        400 * RENDER_SCALE_3D,
         "#ff5c87"
       );
 
       // dot2
       Renderer3D.drawCircle(
         { x: x + width / 2, y: y + height / 2 },
-        30,
+        300 * RENDER_SCALE_3D,
         "white"
       );
     }
