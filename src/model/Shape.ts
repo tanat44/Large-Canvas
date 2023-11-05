@@ -1,7 +1,8 @@
 import Konva from "konva";
 import { Layer } from "konva/lib/Layer";
-import { RENDER_SCALE } from "../Canvas2D";
-import { RENDER_SCALE_3D, Renderer3D } from "../../Canvas3D/Render3D";
+import { RENDER_SCALE } from "../KonvaCanvas/KonvaCanvas";
+import { RENDER_SCALE_3D, Renderer3D } from "../ThreeCanvas/Render3D";
+import { PixiCanvas } from "../PixiCanvas/PixiCanvas";
 
 export type ShapeProperty = {
   x: number;
@@ -28,7 +29,7 @@ export class Shape {
 
   constructor() {}
 
-  render2D(layer: Layer) {
+  renderKonva(layer: Layer) {
     // bounding box
     const shapeProperty: ShapeProperty = {
       x: this.properties.x * RENDER_SCALE,
@@ -106,7 +107,7 @@ export class Shape {
     }
   }
 
-  render3D() {
+  renderThree() {
     // bounding box
     const shapeProperty: ShapeProperty = {
       x: this.properties.x * RENDER_SCALE_3D,
@@ -168,6 +169,90 @@ export class Shape {
       Renderer3D.drawCircle(
         { x: x + width / 2, y: y + height / 2 },
         300 * RENDER_SCALE_3D,
+        "white"
+      );
+    }
+  }
+
+  renderPixi(canvas: PixiCanvas) {
+    // bounding box
+    const shapeProperty: ShapeProperty = {
+      x: this.properties.x * RENDER_SCALE,
+      y: this.properties.y * RENDER_SCALE,
+      width: this.properties.width * RENDER_SCALE,
+      height: this.properties.height * RENDER_SCALE,
+    };
+
+    const rect = new Konva.Rect({
+      ...shapeProperty,
+      stroke: "black",
+      strokeWidth: 2,
+    });
+    canvas.drawRect(
+      this.name,
+      shapeProperty.x,
+      shapeProperty.y,
+      shapeProperty.width,
+      shapeProperty.height
+    );
+
+    // small boxes
+    const direction =
+      shapeProperty.width > shapeProperty.height
+        ? Direction.Horizontal
+        : Direction.Vertical;
+    const majorLength =
+      direction == Direction.Horizontal
+        ? shapeProperty.width
+        : shapeProperty.height;
+
+    const SMALL_BOX_SIZE = 100;
+    const PADDING = 20;
+    let count = majorLength / SMALL_BOX_SIZE;
+    count = Math.floor(count);
+    let actualSize = (majorLength - PADDING * (count + 1)) / count;
+
+    for (let i = 0; i < count; ++i) {
+      const x =
+        direction == Direction.Horizontal
+          ? shapeProperty.x + (i + 1) * PADDING + i * actualSize
+          : shapeProperty.x + PADDING;
+      const y =
+        direction == Direction.Vertical
+          ? shapeProperty.y + (i + 1) * PADDING + i * actualSize
+          : shapeProperty.y + PADDING;
+      const width =
+        direction == Direction.Horizontal
+          ? actualSize
+          : shapeProperty.width - PADDING * 2;
+      const height =
+        direction == Direction.Vertical
+          ? actualSize
+          : shapeProperty.height - PADDING * 2;
+      const rect = new Konva.Rect({
+        x: x,
+        y: y,
+        width: width,
+        height: height,
+        fill: "#8877ed",
+      });
+      canvas.drawRect(`${this.name}_${i}`, x, y, width, height, "#ff5c87");
+
+      canvas.drawCircle(
+        `${this.name}_${i}_dot`,
+        x + width / 2,
+        y + height / 2,
+        40,
+        "#ff5c87"
+      );
+
+      canvas.drawCircle(
+        `${this.name}_${i}_dot2`,
+        x + width / 2,
+        y + height / 2,
+        30,
+        "#ff5c87",
+        2,
         "white"
       );
     }

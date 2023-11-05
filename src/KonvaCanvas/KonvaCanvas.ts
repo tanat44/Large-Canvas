@@ -1,13 +1,13 @@
 import Konva from "konva";
 import { Stage } from "konva/lib/Stage";
-import { Layout } from "./model/Shape";
+import { Layout } from "../model/Shape";
 import { Layer } from "konva/lib/Layer";
 import { Vector2d } from "konva/lib/types";
-import { ICanvas } from "./ICanvas";
+import { ICanvas } from "../ICanvas";
 
 export const RENDER_SCALE = 0.1;
 
-export class Canvas2D implements ICanvas {
+export class KonvaCanvas implements ICanvas {
   stage: Stage;
   layer: Layer;
 
@@ -99,7 +99,7 @@ export class Canvas2D implements ICanvas {
 
   renderLayout(layout: Layout) {
     layout.shapes.forEach((shape) => {
-      shape.render2D(this.layer);
+      shape.renderKonva(this.layer);
     });
     this.zoomFit();
     this.updateNumberOfObjects();

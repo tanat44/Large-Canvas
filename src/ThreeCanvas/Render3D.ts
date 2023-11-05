@@ -1,12 +1,12 @@
 import { Vector2d } from "konva/lib/types";
 import * as THREE from "three";
 import { Object3D } from "three";
-import { Canvas3D } from "./Canvas3D";
+import { ThreeCanvas } from "./ThreeCanvas";
 import {
   konvaVectorToThreeVector3D,
   rotatePoint,
   konvaRotationToThreeRotation,
-} from "../src/model/vector";
+} from "../model/vector";
 
 export const RENDER_SCALE_3D = 0.005;
 
@@ -18,7 +18,7 @@ export class Renderer3D {
     rotationKonva: number,
     color: string
   ): Object3D {
-    const canvas = Canvas3D.instance;
+    const canvas = ThreeCanvas.instance;
     const gameObject = new THREE.Mesh(
       canvas.assets.cubeGeo,
       canvas.assets.getBasicMaterial(color)
@@ -36,7 +36,7 @@ export class Renderer3D {
   }
 
   static drawCircle(pos: Vector2d, radius: number, color: string): Object3D {
-    const canvas = Canvas3D.instance;
+    const canvas = ThreeCanvas.instance;
     const gameObject = new THREE.Mesh(
       canvas.assets.cylinderGeo,
       canvas.assets.getBasicMaterial(color)
@@ -49,7 +49,7 @@ export class Renderer3D {
   }
 
   static drawLine(points: Vector2d[], color: string): Object3D {
-    const canvas = Canvas3D.instance;
+    const canvas = ThreeCanvas.instance;
     const points3D = points.map((point) => konvaVectorToThreeVector3D(point));
     const geometry = new THREE.BufferGeometry().setFromPoints(points3D);
     const gameObject = new THREE.Line(

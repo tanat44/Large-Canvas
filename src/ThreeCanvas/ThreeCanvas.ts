@@ -11,16 +11,15 @@ import {
 } from "three";
 import * as THREE from "three";
 import { Assets } from "./Assets";
-import { Layout } from "../src/model/Shape";
-import { Renderer3D } from "./Render3D";
+import { Layout } from "../model/Shape";
 
 export type TickCallback = (dt: number) => void;
 
-export class Canvas3D {
+export class ThreeCanvas {
   // Data classes
   assets: Assets;
   objects: any[];
-  static instance: Canvas3D;
+  static instance: ThreeCanvas;
 
   // Threejs
   container: HTMLElement;
@@ -36,7 +35,7 @@ export class Canvas3D {
   tickCallbacks: TickCallback[];
 
   constructor(canvasId: string) {
-    Canvas3D.instance = this;
+    ThreeCanvas.instance = this;
     this.objects = [];
     this.raycaster = new THREE.Raycaster();
     this.setupScene(canvasId);
@@ -72,7 +71,6 @@ export class Canvas3D {
     this.camera = new THREE.PerspectiveCamera(70, width / height, 1, 10000);
     this.camera.position.set(0, 3000, 2000);
     this.scene.add(this.camera);
-
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(width, height);
@@ -85,7 +83,7 @@ export class Canvas3D {
   }
 
   tick() {
-    const dt = Canvas3D.instance.clock.getDelta();
+    const dt = ThreeCanvas.instance.clock.getDelta();
     this.tickCallbacks.map((fn) => fn(dt));
     this.render();
   }
@@ -102,7 +100,7 @@ export class Canvas3D {
     this.transformControl.showY = false;
     this.transformControl.addEventListener("change", () => this.render());
     this.transformControl.addEventListener("dragging-changed", (event: any) => {
-      Canvas3D.instance.orbitControl.enabled = !event.value;
+      ThreeCanvas.instance.orbitControl.enabled = !event.value;
     });
     this.scene.add(this.transformControl);
   }
@@ -149,7 +147,7 @@ export class Canvas3D {
   renderLayout(layout: Layout) {
     // Renderer3D.drawRect({ x: 1, y: 3 }, 2, 5, 0, "red");
     layout.shapes.forEach((shape) => {
-      shape.render3D();
+      shape.renderThree();
     });
   }
 

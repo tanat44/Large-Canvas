@@ -1,11 +1,13 @@
-import { Canvas3D } from "../Canvas3D/Canvas3D";
-import { Canvas2D } from "./Canvas2D";
+import { ThreeCanvas } from "./ThreeCanvas/ThreeCanvas";
+import { KonvaCanvas } from "./KonvaCanvas/KonvaCanvas";
 import { CANVAS_ID, ICanvas } from "./ICanvas";
 import { Layout } from "./model/Shape";
+import { PixiCanvas } from "./PixiCanvas/PixiCanvas";
 
 enum CanvasMode {
   Konva = 0,
   Three = 1,
+  Pixi = 2,
 }
 
 export class Ui {
@@ -13,9 +15,26 @@ export class Ui {
   mode: CanvasMode;
 
   constructor() {
+    this.mode = CanvasMode.Pixi;
+
+    this.initCanvasMode();
     this.initUpload();
     this.initControl();
-    this.mode = CanvasMode.Konva;
+  }
+
+  initCanvasMode() {
+    // select mode
+    const select = document.getElementById("canvasEngine") as HTMLSelectElement;
+    for (const key in CanvasMode) {
+      const mode = CanvasMode[key];
+      if (typeof mode !== "string") continue;
+      const option = document.createElement("option");
+      option.innerHTML = mode as string;
+      option.value = CanvasMode[mode as unknown as number];
+      select.appendChild(option);
+    }
+    select.value = this.mode.toString();
+    select.addEventListener("change", () => this.changeCanvas());
     this.initCanvas();
   }
 
@@ -40,37 +59,31 @@ export class Ui {
     document.getElementById("clearButton").addEventListener("click", () => {
       this.canvas.clear();
     });
-
-    document.getElementById("toggleCanvas").addEventListener("click", () => {
-      this.toggleCanvas();
-    });
   }
 
-  toggleCanvas() {
+  changeCanvas() {
+    // destroy current canvas
     this.canvas.destroy();
-    // remove all child
     const canvasContainer = document.getElementById(CANVAS_ID);
     while (canvasContainer.firstChild) {
       canvasContainer.removeChild(canvasContainer.firstChild);
     }
-    if (this.mode === CanvasMode.Konva) {
-      this.mode = CanvasMode.Three;
-    } else if (this.mode === CanvasMode.Three) {
-      this.mode = CanvasMode.Konva;
-    }
+    const select = document.getElementById("canvasEngine") as HTMLSelectElement;
+    const value = parseInt(select.value);
+    this.mode = value;
     this.initCanvas();
   }
 
   initCanvas() {
     console.log(`Initializing Canvas: ${CanvasMode[this.mode]}`);
     if (this.mode === CanvasMode.Konva) {
-      this.canvas = new Canvas2D(CANVAS_ID);
-      document.getElementById("toggleCanvas").innerText =
-        "Switch to Three Canvas";
+      this.canvas = new KonvaCanvas(CANVAS_ID);
     } else if (this.mode === CanvasMode.Three) {
-      this.canvas = new Canvas3D(CANVAS_ID);
-      document.getElementById("toggleCanvas").innerText =
-        "Switch to Konva Canvas";
+      this.canvas = new ThreeCanvas(CANVAS_ID);
+    } else if (this.mode === CanvasMode.Pixi) {
+      this.canvas = new PixiCanvas(CANVAS_ID);
+    } else {
+      console.error("Cannot init unknown CanvasMode");
     }
   }
 

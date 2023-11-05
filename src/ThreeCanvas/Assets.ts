@@ -7,10 +7,10 @@ import {
   MeshBasicMaterial,
   MeshLambertMaterial,
 } from "three";
-import { Canvas3D } from "./Canvas3D";
+import { ThreeCanvas } from "./ThreeCanvas";
 
 export class Assets {
-  canvas3D: Canvas3D;
+  canvas3D: ThreeCanvas;
 
   // geometry
   cubeGeo: BoxGeometry;
@@ -22,7 +22,7 @@ export class Assets {
   basicMaterials: Map<string, MeshBasicMaterial>;
   lineMaterials: Map<string, LineBasicMaterial>;
 
-  constructor(canvas3D: Canvas3D) {
+  constructor(canvas3D: ThreeCanvas) {
     this.canvas3D = canvas3D;
     this.basicMaterials = new Map();
     this.lineMaterials = new Map();
