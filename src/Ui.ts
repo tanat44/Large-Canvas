@@ -15,7 +15,7 @@ export class Ui {
   mode: CanvasMode;
 
   constructor() {
-    this.mode = CanvasMode.Pixi;
+    this.mode = CanvasMode.Three;
 
     this.initCanvasMode();
     this.initUpload();

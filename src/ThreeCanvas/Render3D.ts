@@ -9,8 +9,11 @@ import {
 } from "../model/vector";
 
 export const RENDER_SCALE_3D = 0.005;
+const DZ = 0.1;
 
 export class Renderer3D {
+  static z: number = 0;
+
   static drawRect(
     pos: Vector2d,
     width: number,
@@ -20,17 +23,19 @@ export class Renderer3D {
   ): Object3D {
     const canvas = ThreeCanvas.instance;
     const gameObject = new THREE.Mesh(
-      canvas.assets.cubeGeo,
+      canvas.assets.planeGeo,
       canvas.assets.getBasicMaterial(color)
     );
     const center = konvaVectorToThreeVector3D(pos);
     const offset = konvaVectorToThreeVector3D(
       rotatePoint({ x: width / 2, y: height / 2 }, rotationKonva)
-    );
+    ).add(new THREE.Vector3(0, Renderer3D.z, 0));
+    Renderer3D.z += DZ;
     const rot = konvaRotationToThreeRotation(rotationKonva);
     gameObject.position.copy(center.add(offset));
-    gameObject.scale.set(width, 0.1, height);
     gameObject.rotateY(rot);
+    gameObject.rotateX(-Math.PI / 2);
+    gameObject.scale.set(width, height, 1);
     canvas.addGameObjectToScene(gameObject);
     return gameObject;
   }
@@ -38,12 +43,14 @@ export class Renderer3D {
   static drawCircle(pos: Vector2d, radius: number, color: string): Object3D {
     const canvas = ThreeCanvas.instance;
     const gameObject = new THREE.Mesh(
-      canvas.assets.cylinderGeo,
+      canvas.assets.circleGeo,
       canvas.assets.getBasicMaterial(color)
     );
     const center = konvaVectorToThreeVector3D(pos);
-    gameObject.position.copy(center);
-    gameObject.scale.set(radius, 0.2, radius);
+    gameObject.position.copy(center.add(new THREE.Vector3(0, Renderer3D.z, 0)));
+    Renderer3D.z += DZ;
+    gameObject.rotateX(-Math.PI / 2);
+    gameObject.scale.set(radius, radius, 1);
     canvas.addGameObjectToScene(gameObject);
     return gameObject;
   }

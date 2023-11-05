@@ -15,6 +15,8 @@ export class Assets {
   // geometry
   cubeGeo: BoxGeometry;
   cylinderGeo: CylinderGeometry;
+  planeGeo: THREE.PlaneGeometry;
+  circleGeo: THREE.CircleGeometry;
   plane: Mesh;
 
   // material
@@ -30,6 +32,8 @@ export class Assets {
     // geometry
     this.cubeGeo = new BoxGeometry(1, 1, 1);
     this.cylinderGeo = new CylinderGeometry(1, 1, 1);
+    this.planeGeo = new THREE.PlaneGeometry(1, 1);
+    this.circleGeo = new THREE.CircleGeometry(1, 32);
 
     // material
     const planeGeometry = new THREE.PlaneGeometry(2000, 2000);
@@ -59,7 +63,7 @@ export class Assets {
     const mat = new THREE.MeshBasicMaterial({
       color: color,
       side: THREE.DoubleSide,
-      opacity: 0.4,
+      opacity: 1.0,
       transparent: true,
     });
     this.basicMaterials.set(color, mat);

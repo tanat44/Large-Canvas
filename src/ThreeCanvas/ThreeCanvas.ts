@@ -12,6 +12,7 @@ import {
 import * as THREE from "three";
 import { Assets } from "./Assets";
 import { Layout } from "../model/Shape";
+import { Renderer3D } from "./Render3D";
 
 export type TickCallback = (dt: number) => void;
 
@@ -68,7 +69,7 @@ export class ThreeCanvas {
     this.container = document.getElementById(canvasId);
     var width = this.container.offsetWidth;
     var height = this.container.offsetWidth;
-    this.camera = new THREE.PerspectiveCamera(70, width / height, 1, 10000);
+    this.camera = new THREE.PerspectiveCamera(70, width / height, 0.1, 999999);
     this.camera.position.set(0, 3000, 2000);
     this.scene.add(this.camera);
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -145,8 +146,8 @@ export class ThreeCanvas {
   }
 
   renderLayout(layout: Layout) {
-    // Renderer3D.drawRect({ x: 1, y: 3 }, 2, 5, 0, "red");
     layout.shapes.forEach((shape) => {
+      console.log(shape.name);
       shape.renderThree();
     });
   }

@@ -3,6 +3,7 @@ import { ICanvas } from "../ICanvas";
 import {
   Application,
   Container,
+  FederatedPointerEvent,
   Graphics,
   Rectangle,
   Sprite,
@@ -24,10 +25,13 @@ export class PixiCanvas implements ICanvas {
   main_layer_zoom_offset_y: number = 0;
 
   constructor(canvasId: string) {
-    this.app = new Application({
-      background: "#1099bb",
-    });
     const canvas = document.getElementById(canvasId);
+
+    this.app = new Application({
+      background: "#dddddd",
+      height: canvas.offsetHeight,
+      width: canvas.offsetWidth,
+    });
     canvas.appendChild(this.app.view as unknown as HTMLElement);
 
     this.mainLayer = new Container();
@@ -35,13 +39,9 @@ export class PixiCanvas implements ICanvas {
     this.mainLayer.position.set(0, 0);
     this.app.stage.addChild(this.mainLayer);
 
-    this.drawRect("hi", 10, 30, 100, 20);
     canvas.addEventListener("mousewheel", (e: any) => this.zoom(e), false);
 
     this.app.stage.hitArea = new Rectangle(0, 0, 1000, 1000);
-    // canvas.onmousedown = (e: any) => {
-    //   console.log("a");
-    // };
     canvas.onmousedown = (e: any) => this.onMouseDown(e);
     canvas.onmousemove = (e: any) => this.onMouseMove(e);
     canvas.onmouseup = (e: any) => this.onMouseUp(e);
@@ -130,15 +130,28 @@ export class PixiCanvas implements ICanvas {
     this.mainLayer.addChild(rect);
   }
 
-  click(e: any) {
-    console.log(e);
+  click(e: FederatedPointerEvent) {
+    const target = e.target as Graphics;
+    console.log(target.name);
   }
 
   renderLayout(layout: Layout) {
     let count = 0;
+    // render multi objects
+    // for (const shape of layout.shapes) {
+    //   shape.renderPixi(this);
+    //   ++count;
+    // }
+
+    // render batch
     for (const shape of layout.shapes) {
-      shape.renderPixi(this);
+      const graphic = new Graphics();
+      graphic.name = shape.name;
+      graphic.interactive = true;
+      graphic.onclick = this.click;
+      shape.renderPixiBatch(graphic);
       ++count;
+      this.mainLayer.addChild(graphic);
     }
 
     console.log("rendered ", count);
@@ -210,7 +223,7 @@ export class PixiCanvas implements ICanvas {
     if (d) {
       if (w) return (w / d / 40) * d > 0 ? 1 : -1; // Opera
       else return -d / 3; // Firefox;         TODO: do not /3 for OS X
-    } else return w / 120; // IE/Safari/Chrome TODO: /3 for Chrome OS X
+    } else return w / 1200; // IE/Safari/Chrome TODO: /3 for Chrome OS X
   }
 
   wheelDirection(evt: any) {
