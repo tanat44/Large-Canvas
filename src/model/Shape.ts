@@ -1,9 +1,9 @@
 import Konva from "konva";
 import { Layer } from "konva/lib/Layer";
-import { RENDER_SCALE } from "../KonvaCanvas/KonvaCanvas";
-import { RENDER_SCALE_3D, Renderer3D } from "../ThreeCanvas/Render3D";
-import { PixiCanvas } from "../PixiCanvas/PixiCanvas";
 import { Graphics } from "pixi.js";
+import { RENDER_SCALE } from "../KonvaCanvas/KonvaCanvas";
+import { PixiCanvas } from "../PixiCanvas/PixiCanvas";
+import { ThreeCanvas } from "../ThreeCanvas/ThreeCanvas";
 
 export type ShapeProperty = {
   x: number;
@@ -43,7 +43,6 @@ export class Shape {
       ...shapeProperty,
       stroke: "black",
       strokeWidth: 2,
-      listening: false
     });
     layer.add(rect);
 
@@ -86,33 +85,33 @@ export class Shape {
         width: width,
         height: height,
         fill: "#8877ed",
-        listening: false
+        listening: false,
       });
       layer.add(rect);
 
-      // // dot
-      // const dot = new Konva.Circle({
-      //   x: x + width / 2,
-      //   y: y + height / 2,
-      //   radius: 40,
-      //   fill: "#ff5c87",
-      //   listening: false
-      // });
-      // layer.add(dot);
+      // dot
+      const dot = new Konva.Circle({
+        x: x + width / 2,
+        y: y + height / 2,
+        radius: 40,
+        fill: "#ff5c87",
+        listening: false,
+      });
+      layer.add(dot);
 
-      // // dot2
-      // const dot2 = new Konva.Circle({
-      //   x: x + width / 2,
-      //   y: y + height / 2,
-      //   radius: 30,
-      //   stroke: "white",
-      //   listening: false
-      // });
-      // layer.add(dot2);
+      // dot2
+      const dot2 = new Konva.Circle({
+        x: x + width / 2,
+        y: y + height / 2,
+        radius: 30,
+        stroke: "white",
+        listening: false,
+      });
+      layer.add(dot2);
     }
   }
 
-  renderThree() {
+  renderThree(threeCanvas: ThreeCanvas) {
     // bounding box
     const shapeProperty: ShapeProperty = {
       x: this.properties.x * RENDER_SCALE,
@@ -120,12 +119,13 @@ export class Shape {
       width: this.properties.width * RENDER_SCALE,
       height: this.properties.height * RENDER_SCALE,
     };
-    Renderer3D.drawRect(
+    threeCanvas.assets.createRectangle(
       { x: shapeProperty.x, y: shapeProperty.y },
       shapeProperty.width,
       shapeProperty.height,
       0,
-      "black"
+      "black",
+      0,
     );
 
     const direction =
@@ -159,21 +159,28 @@ export class Shape {
         direction == Direction.Vertical
           ? actualSize
           : shapeProperty.height - PADDING * 2;
-      Renderer3D.drawRect({ x: x, y: y }, width, height, 0, "#8877ed");
-
-      // dot
-      Renderer3D.drawCircle(
-        { x: x + width / 2, y: y + height / 2 },
-        400 * RENDER_SCALE,
-        "#ff5c87"
+      threeCanvas.assets.createRectangle(
+        { x: x, y: y },
+        width,
+        height,
+        0,
+        "#8877ed",
+        1
       );
 
-      // dot2
-      Renderer3D.drawCircle(
-        { x: x + width / 2, y: y + height / 2 },
-        300 * RENDER_SCALE,
-        "white"
-      );
+      // // dot
+      // Renderer3D.drawCircle(
+      //   { x: x + width / 2, y: y + height / 2 },
+      //   400 * RENDER_SCALE,
+      //   "#ff5c87"
+      // );
+
+      // // dot2
+      // Renderer3D.drawCircle(
+      //   { x: x + width / 2, y: y + height / 2 },
+      //   300 * RENDER_SCALE,
+      //   "white"
+      // );
     }
   }
 

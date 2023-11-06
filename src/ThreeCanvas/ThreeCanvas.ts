@@ -1,7 +1,7 @@
 // @ts-ignore
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-// @ts-ignore
-import { TransformControls } from "three/addons/controls/TransformControls.js";
+
+import * as THREE from "three";
 import {
   Object3D,
   PerspectiveCamera,
@@ -9,21 +9,22 @@ import {
   Scene,
   WebGLRenderer,
 } from "three";
-import * as THREE from "three";
-import { Assets } from "./Assets";
+// @ts-ignore
+import { TransformControls } from "three/addons/controls/TransformControls.js";
 import { Layout } from "../model/Shape";
-import { Renderer3D } from "./Render3D";
+import { Assets } from "./Assets";
+import { MouseHandler } from "./MouseHandler";
 
 export type TickCallback = (dt: number) => void;
 
 export class ThreeCanvas {
-  // Data classes
+  container: HTMLElement;
   assets: Assets;
+  mouseHandler: MouseHandler;
   objects: any[];
   static instance: ThreeCanvas;
 
   // Threejs
-  container: HTMLElement;
   scene: Scene;
   camera: PerspectiveCamera;
   raycaster: Raycaster;
@@ -42,10 +43,10 @@ export class ThreeCanvas {
     this.setupScene(canvasId);
     this.setupLighting();
     this.setupOrbitControl();
-    this.setupTransformControl();
+    // this.setupTransformControl();
     this.assets = new Assets(this);
     this.tickCallbacks = [];
-    this.render();
+    this.mouseHandler = new MouseHandler(canvasId, this)
   }
 
   setupLighting() {
@@ -68,9 +69,10 @@ export class ThreeCanvas {
 
     this.container = document.getElementById(canvasId);
     var width = this.container.offsetWidth;
-    var height = this.container.offsetWidth;
+    var height = this.container.offsetHeight;
     this.camera = new THREE.PerspectiveCamera(70, width / height, 0.1, 999999);
     this.camera.position.set(0, 3000, 2000);
+    this.camera.lookAt(new THREE.Vector3(0,0,0))
     this.scene.add(this.camera);
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -112,6 +114,10 @@ export class ThreeCanvas {
       this.renderer.domElement
     );
     this.orbitControl.damping = 0.2;
+    this.orbitControl.mouseButtons = {
+      MIDDLE: THREE.MOUSE.ROTATE,
+      RIGHT: THREE.MOUSE.PAN
+    }
     this.orbitControl.addEventListener("change", () => this.render());
   }
 
@@ -148,8 +154,9 @@ export class ThreeCanvas {
   renderLayout(layout: Layout) {
     layout.shapes.forEach((shape) => {
       console.log(shape.name);
-      shape.renderThree();
+      shape.renderThree(this);
     });
+    this.assets.planeMeshes.computeBoundingSphere();
   }
 
   clear() {}
