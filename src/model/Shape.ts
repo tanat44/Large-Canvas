@@ -43,6 +43,7 @@ export class Shape {
       ...shapeProperty,
       stroke: "black",
       strokeWidth: 2,
+      listening: false
     });
     layer.add(rect);
 
@@ -85,26 +86,29 @@ export class Shape {
         width: width,
         height: height,
         fill: "#8877ed",
+        listening: false
       });
       layer.add(rect);
 
-      // dot
-      const dot = new Konva.Circle({
-        x: x + width / 2,
-        y: y + height / 2,
-        radius: 40,
-        fill: "#ff5c87",
-      });
-      layer.add(dot);
+      // // dot
+      // const dot = new Konva.Circle({
+      //   x: x + width / 2,
+      //   y: y + height / 2,
+      //   radius: 40,
+      //   fill: "#ff5c87",
+      //   listening: false
+      // });
+      // layer.add(dot);
 
-      // dot2
-      const dot2 = new Konva.Circle({
-        x: x + width / 2,
-        y: y + height / 2,
-        radius: 30,
-        stroke: "white",
-      });
-      layer.add(dot2);
+      // // dot2
+      // const dot2 = new Konva.Circle({
+      //   x: x + width / 2,
+      //   y: y + height / 2,
+      //   radius: 30,
+      //   stroke: "white",
+      //   listening: false
+      // });
+      // layer.add(dot2);
     }
   }
 
