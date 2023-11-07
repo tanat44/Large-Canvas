@@ -46,7 +46,10 @@ export class ThreeCanvas {
     // this.setupTransformControl();
     this.assets = new Assets(this);
     this.tickCallbacks = [];
-    this.mouseHandler = new MouseHandler(canvasId, this)
+    this.mouseHandler = new MouseHandler(canvasId, this);
+
+    // this.assets.createBufferGeometry();
+    this.assets.createWireframeRectangle({ x: 100, y: 200 }, 200, 100, 0);
   }
 
   setupLighting() {
@@ -72,7 +75,7 @@ export class ThreeCanvas {
     var height = this.container.offsetHeight;
     this.camera = new THREE.PerspectiveCamera(70, width / height, 0.1, 999999);
     this.camera.position.set(0, 3000, 2000);
-    this.camera.lookAt(new THREE.Vector3(0,0,0))
+    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
     this.scene.add(this.camera);
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -116,8 +119,8 @@ export class ThreeCanvas {
     this.orbitControl.damping = 0.2;
     this.orbitControl.mouseButtons = {
       MIDDLE: THREE.MOUSE.ROTATE,
-      RIGHT: THREE.MOUSE.PAN
-    }
+      RIGHT: THREE.MOUSE.PAN,
+    };
     this.orbitControl.addEventListener("change", () => this.render());
   }
 

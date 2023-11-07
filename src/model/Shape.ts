@@ -119,13 +119,13 @@ export class Shape {
       width: this.properties.width * RENDER_SCALE,
       height: this.properties.height * RENDER_SCALE,
     };
-    threeCanvas.assets.createRectangle(
+    threeCanvas.assets.createRectangleInstance(
       { x: shapeProperty.x, y: shapeProperty.y },
       shapeProperty.width,
       shapeProperty.height,
       0,
       "black",
-      0,
+      0
     );
 
     const direction =
@@ -159,7 +159,7 @@ export class Shape {
         direction == Direction.Vertical
           ? actualSize
           : shapeProperty.height - PADDING * 2;
-      threeCanvas.assets.createRectangle(
+      threeCanvas.assets.createRectangleInstance(
         { x: x, y: y },
         width,
         height,
