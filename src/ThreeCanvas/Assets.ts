@@ -15,9 +15,6 @@ import {
   rotatePoint,
 } from "../model/vector";
 import { ThreeCanvas } from "./ThreeCanvas";
-import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
-import { WireframeGeometry2 } from "three/examples/jsm/lines/WireframeGeometry2";
-import { Wireframe } from "three/examples/jsm/lines/Wireframe";
 
 export class Assets {
   canvas3D: ThreeCanvas;
@@ -188,6 +185,16 @@ export class Assets {
     go2.rotation.copy(rot);
 
     this.canvas3D.addGameObjectToScene(go2);
+
+    // object 3
+    const points = [];
+    points.push( new THREE.Vector3( - 10, 0, 0 ) );
+    points.push( new THREE.Vector3( 0, 10, 0 ) );
+    points.push( new THREE.Vector3( 10, 0, 0 ) );
+    const geometry = new THREE.BufferGeometry().setFromPoints( points );
+    this.setupAttributes(geometry)
+    const line = new THREE.Line( geometry, material2 );
+    this.canvas3D.addGameObjectToScene(line);
 
     return go2;
   }
