@@ -168,19 +168,25 @@ export class Shape {
         1
       );
 
-      // // dot
-      // Renderer3D.drawCircle(
-      //   { x: x + width / 2, y: y + height / 2 },
-      //   400 * RENDER_SCALE,
-      //   "#ff5c87"
-      // );
+      // dot
+      threeCanvas.assets.createRectangleInstance(
+        { x: x + width / 2, y: y + height / 2 },
+        400 * RENDER_SCALE,
+        400 * RENDER_SCALE,
+        0,
+        "#ff5c87",
+        1
+      );
 
-      // // dot2
-      // Renderer3D.drawCircle(
-      //   { x: x + width / 2, y: y + height / 2 },
-      //   300 * RENDER_SCALE,
-      //   "white"
-      // );
+      // dot2
+      threeCanvas.assets.createRectangleInstance(
+        { x: x + width / 2, y: y + height / 2 },
+        300 * RENDER_SCALE,
+        300 * RENDER_SCALE,
+        0,
+        "#ffffff",
+        1
+      );
     }
   }
 

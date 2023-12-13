@@ -160,6 +160,7 @@ export class ThreeCanvas {
       shape.renderThree(this);
     });
     this.assets.planeMeshes.computeBoundingSphere();
+    this.render();
   }
 
   clear() {}

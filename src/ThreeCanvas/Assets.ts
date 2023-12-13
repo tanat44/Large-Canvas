@@ -116,8 +116,6 @@ export class Assets {
 
     // update meshIndex
     this.planeMeshIndex++;
-
-    this.canvas3D.render();
     return null;
   }
 
@@ -188,12 +186,12 @@ export class Assets {
 
     // object 3
     const points = [];
-    points.push( new THREE.Vector3( - 10, 0, 0 ) );
-    points.push( new THREE.Vector3( 0, 10, 0 ) );
-    points.push( new THREE.Vector3( 10, 0, 0 ) );
-    const geometry = new THREE.BufferGeometry().setFromPoints( points );
-    this.setupAttributes(geometry)
-    const line = new THREE.Line( geometry, material2 );
+    points.push(new THREE.Vector3(-10, 0, 0));
+    points.push(new THREE.Vector3(0, 10, 0));
+    points.push(new THREE.Vector3(10, 0, 0));
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    this.setupAttributes(geometry);
+    const line = new THREE.Line(geometry, material2);
     this.canvas3D.addGameObjectToScene(line);
 
     return go2;
